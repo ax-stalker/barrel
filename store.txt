@@ -1,0 +1,117 @@
+const express = require('express');
+const mysql = require("mysql")
+const dotenv = require('dotenv')
+
+const app = express();
+
+dotenv.config({ path: './.env'})
+
+
+
+// const db = mysql.createConnection({
+//     host: process.env.DATABASE_HOST,
+//     user: process.env.DATABASE_USER,
+//     password: process.env.DATABASE_PASSWORD,
+//     database: process.env.DATABASE
+// })
+
+// db.connect((error) => {
+//     if(error) {
+//         console.log(error)
+//     } else {
+//         console.log("MySQL connected!")
+//     }
+// })
+
+
+
+
+const db = mysql.createConnection({
+
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE,
+
+    // host: process.env.DATABASE_HOST||'localhost',
+    // user: process.env.DATABASE_USER||'maxwell',
+    // password: process.env.DATABASE_PASSWORD||'root',
+    // database: process.env.DATABASE||'login-db',
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to database:', err.message);
+    return;
+  }
+  console.log('Connected to the database');
+});
+
+// specifiying the view engine
+app.set('view engine', 'hbs')
+
+// other imports
+const path = require("path")
+
+const publicDir = path.join(__dirname, './public')
+
+app.use(express.static(publicDir))
+
+// route to render index page
+app.get("/", (req, res) => {
+    res.render("index")
+})
+
+
+app.get("/register", (req, res) => {
+    res.render("register")
+})
+
+app.get("/login", (req, res) => {
+    res.render("login")
+})
+
+
+// user authentication
+const bcrypt = require("bcryptjs")
+app.use(express.urlencoded({extended: 'false'}))
+app.use(express.json())
+// retrieving form values
+app.post("/auth/register", (req, res) => {    
+    const { name, email, password, password_confirm } = req.body
+
+    db.query('SELECT email FROM users WHERE email = ?', [email], async (error, result) => {
+        if(error){
+            console.log(error)
+        }
+
+        if( result.length > 0 ) {
+            return res.render('register', {
+                message: 'This email is already in use'
+            })
+        } else if(password !== password_confirm) {
+            return res.render('register', {
+                // message: 'Password Didn\'t Match!'
+                message: `${password} and ${password_confirm} do not match`
+            })
+        }
+
+        let hashedPassword = await bcrypt.hash(password, 8)
+
+        console.log(hashedPassword)
+       
+        db.query('INSERT INTO users SET?', {name: name, email: email, password: hashedPassword}, (err, result) => {
+            if(err) {
+                console.log(error)
+            } else {
+                return res.render('register', {
+                    message: 'User registered!'
+                })
+            }
+        })        
+    })
+})
+
+app.listen(5000, ()=> {
+    console.log("server started on port 5000")
+})

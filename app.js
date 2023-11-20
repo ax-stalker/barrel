@@ -1,0 +1,144 @@
+const express = require('express');
+const mysql = require("mysql")
+const dotenv = require('dotenv')
+
+const app = express();
+
+dotenv.config({ path: './.env'})
+
+
+const db = mysql.createConnection({
+
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE,
+
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to database:', err.message);
+    return;
+  }
+  console.log('Connected to the database');
+});
+
+// specifiying the view engine
+app.set('view engine', 'hbs')
+
+// other imports
+const path = require("path")
+
+const publicDir = path.join(__dirname, './public')
+
+app.use(express.static(publicDir))
+
+// route to render index page
+app.get("/", (req, res) => {
+    res.render("index")
+})
+
+
+app.get("/register", (req, res) => {
+    res.render("register")
+})
+
+
+
+
+// user authentication
+const bcrypt = require("bcryptjs")
+app.use(express.urlencoded({extended: 'false'}))
+app.use(express.json())
+
+// retrieving form values
+app.post("/auth/register", (req, res) => {    
+    const { name, email, password, password_confirm } = req.body
+
+    db.query('SELECT email FROM users WHERE email = ?', [email], async (error, result) => {
+        if(error){
+            console.log(error)
+        }
+
+        if( result.length > 0 ) {
+            return res.render('register', {
+                message: 'This email is already in use'
+            })
+        } else if(password !== password_confirm) {
+            return res.render('register', {
+                // message: 'Password Didn\'t Match!'
+                message: `${password} and ${password_confirm} do not match`
+            })
+        }
+
+        let hashedPassword = await bcrypt.hash(password, 8)
+
+        console.log(`${name} registered `)
+       
+        db.query('INSERT INTO users SET?', {name: name, email: email, password: hashedPassword}, (err, result) => {
+            if(err) {
+                console.log(error)
+            } else {
+                return res.render('register', {
+                    message: 'User registered!'
+                })
+            }
+        })        
+    })
+})
+
+
+
+
+// user login
+app.get("/login", (req, res) => {
+    res.render("login")
+})
+
+app.post("/auth/login", (req, res) => {
+    const { email, password } = req.body;
+
+    // Check if the user with the given email exists
+    db.query('SELECT * FROM users WHERE email = ?', [email], async (error, results) => {
+        if (error) {
+            console.log(error);
+            return res.render('login', {
+                message: 'Internal server error'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.render('login', {
+                message: 'User not found'
+            });
+        }
+
+        // Compare the provided password with the hashed password in the database
+        const isPasswordValid = await bcrypt.compare(password, results[0].password);
+
+        if (!isPasswordValid) {
+            return res.render('login', {
+                message: 'Invalid password'
+            });
+        }
+
+        // If the email and password are valid, you can set a session or JWT token to track the user's authentication status.
+        // For simplicity, let's just redirect to a dashboard page.
+         res.render('index',{
+            message: "login successful"
+         });
+    });
+});
+
+// ...
+
+
+
+
+
+
+
+app.listen(5000, ()=> {
+    console.log("server started on port 5000")
+})
