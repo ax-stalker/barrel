@@ -1,29 +1,8 @@
 const express = require('express');
-const mysql = require("mysql")
-const dotenv = require('dotenv')
 
+// const dotenv = require('dotenv')
+// dotenv.config({ path: './.env'})
 const app = express();
-
-dotenv.config({ path: './.env'})
-
-
-const db = mysql.createConnection({
-
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE,
-
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to database:', err.message);
-    return;
-  }
-  console.log('Connected to the database');
-});
-
 // specifiying the view engine
 app.set('view engine', 'hbs')
 
@@ -33,6 +12,7 @@ const path = require("path")
 const publicDir = path.join(__dirname, './public')
 
 app.use(express.static(publicDir))
+
 
 // route to render index page
 app.get("/", (req, res) => {
@@ -44,11 +24,20 @@ app.get("/register", (req, res) => {
     res.render("register")
 })
 
+app.get("/dashboard", (req, res)=> {
+    res.render("dashboard")
+})
+
+// app.get("/admin", (req, res)=> {
+//     res.render("admin")
+// })
+
 
 
 
 // user authentication
 const bcrypt = require("bcryptjs")
+const db =require('./database');
 app.use(express.urlencoded({extended: 'false'}))
 app.use(express.json())
 
@@ -80,7 +69,7 @@ app.post("/auth/register", (req, res) => {
             if(err) {
                 console.log(error)
             } else {
-                return res.render('register', {
+                return res.render('dashboard', {
                     message: 'User registered!'
                 })
             }
@@ -125,7 +114,7 @@ app.post("/auth/login", (req, res) => {
 
         // If the email and password are valid, you can set a session or JWT token to track the user's authentication status.
         // For simplicity, let's just redirect to a dashboard page.
-         res.render('index',{
+         res.render('admin',{
             message: "login successful"
          });
     });
@@ -133,6 +122,42 @@ app.post("/auth/login", (req, res) => {
 
 // ...
 
+// admin dashboard
+// Render the admin dashboard with the list of users
+app.get("/admin", (req, res) => {
+    // Retrieve the list of users from your database (replace this with your actual logic)
+    db.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            console.log(error);
+            return res.render('admin', {
+                message: 'Internal server error'
+            });
+        }
+
+        res.render("admin", {
+            users: results
+        });
+    });
+});
+
+// Endpoint to handle user deletion
+app.post('/delete/user/:id', (req, res) => {
+    const userId = req.params.id;
+    
+    // Implement logic to delete the user with the specified ID from your database
+    db.query('DELETE FROM users WHERE id = ?', [userId], (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+
+        if (result.affectedRows > 0) {
+            return res.status(200).json({ message: 'User deleted successfully' });
+        } else {
+            return res.status(404).json({ message: 'User not found' });
+        }
+    });
+});
 
 
 

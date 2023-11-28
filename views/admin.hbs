@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Checklist -->
+        <ul>
+            <li>members table (editable)</li>
+            <li>event management</li>
+            <li>list of people attending event</li>
+        </ul>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd">
+            <a class="navbar-brand" href="#">Admin portal</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#home">Members</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Attending</a>
+                    </li>
+                    <li class="nav-item float-right">
+                        <a class="nav-link" href="/login">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Users Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                <tr id="userRow_{{this.id}}">
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteUser('{{this.id}}')">Delete</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function deleteUser(userId) {
+            // Use AJAX or fetch to send a POST request to the server to delete the user
+            fetch(`/delete/user/${userId}`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                if (data.message === 'User deleted successfully') {
+                    // Remove the deleted user row from the table
+                    const deletedRow = document.getElementById(`userRow_${userId}`);
+                    if (deletedRow) {
+                        deletedRow.remove();
+                    }
+                } else {
+                    // Handle other cases if needed
+                    console.error('Error:', data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+</body>
+
+</html>

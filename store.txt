@@ -7,25 +7,6 @@ const app = express();
 dotenv.config({ path: './.env'})
 
 
-
-// const db = mysql.createConnection({
-//     host: process.env.DATABASE_HOST,
-//     user: process.env.DATABASE_USER,
-//     password: process.env.DATABASE_PASSWORD,
-//     database: process.env.DATABASE
-// })
-
-// db.connect((error) => {
-//     if(error) {
-//         console.log(error)
-//     } else {
-//         console.log("MySQL connected!")
-//     }
-// })
-
-
-
-
 const db = mysql.createConnection({
 
     host: process.env.DATABASE_HOST,
@@ -33,10 +14,6 @@ const db = mysql.createConnection({
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE,
 
-    // host: process.env.DATABASE_HOST||'localhost',
-    // user: process.env.DATABASE_USER||'maxwell',
-    // password: process.env.DATABASE_PASSWORD||'root',
-    // database: process.env.DATABASE||'login-db',
 });
 
 db.connect((err) => {
@@ -67,15 +44,21 @@ app.get("/register", (req, res) => {
     res.render("register")
 })
 
-app.get("/login", (req, res) => {
-    res.render("login")
+app.get("/dashboard", (req, res)=> {
+    res.render("dashboard")
 })
+
+app.get("/admin", (req, res)=> {
+    res.render("admin")
+})
+
 
 
 // user authentication
 const bcrypt = require("bcryptjs")
 app.use(express.urlencoded({extended: 'false'}))
 app.use(express.json())
+
 // retrieving form values
 app.post("/auth/register", (req, res) => {    
     const { name, email, password, password_confirm } = req.body
@@ -98,19 +81,70 @@ app.post("/auth/register", (req, res) => {
 
         let hashedPassword = await bcrypt.hash(password, 8)
 
-        console.log(hashedPassword)
+        console.log(`${name} registered `)
        
         db.query('INSERT INTO users SET?', {name: name, email: email, password: hashedPassword}, (err, result) => {
             if(err) {
                 console.log(error)
             } else {
-                return res.render('register', {
+                return res.render('dashboard', {
                     message: 'User registered!'
                 })
             }
         })        
     })
 })
+
+
+
+
+// user login
+app.get("/login", (req, res) => {
+    res.render("login")
+})
+
+app.post("/auth/login", (req, res) => {
+    const { email, password } = req.body;
+
+    // Check if the user with the given email exists
+    db.query('SELECT * FROM users WHERE email = ?', [email], async (error, results) => {
+        if (error) {
+            console.log(error);
+            return res.render('login', {
+                message: 'Internal server error'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.render('login', {
+                message: 'User not found'
+            });
+        }
+
+        // Compare the provided password with the hashed password in the database
+        const isPasswordValid = await bcrypt.compare(password, results[0].password);
+
+        if (!isPasswordValid) {
+            return res.render('login', {
+                message: 'Invalid password'
+            });
+        }
+
+        // If the email and password are valid, you can set a session or JWT token to track the user's authentication status.
+        // For simplicity, let's just redirect to a dashboard page.
+         res.render('admin',{
+            message: "login successful"
+         });
+    });
+});
+
+// ...
+
+
+
+
+
+
 
 app.listen(5000, ()=> {
     console.log("server started on port 5000")
