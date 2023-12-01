@@ -1,22 +1,187 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     {{!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> --}}
-       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
-    <title> Member Dashboard</title>
+    <title>Members Club</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-    {{!-- navbar --}}
-   
-    <h1>member dashboard</h1>
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
 
 
-{{!-- scripts --}}
- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!-- navbar  -->
+  
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+        <a class="navbar-brand" href="#">
+            <h1 style="padding-left: 20px;">PINE GOLF</h1>
+            
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#events">Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#membership">Membership</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                
+                <li class="nav-item">
+                    <a class="btn btn-danger" href="/login">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+{{!-- <!-- event --> --}}
+<div class="container mt-5" id="events">
+    <h2 class="text-center mb-4">Events</h2>
+    <div class="card horizontal-card">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="/images/stock swing.jpg" alt="Tournament Image" class="card-img">
+               
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">Upcoming Golf Tournament</h5>
+                    <p class="card-text">
+                        Join us for an exciting golf tournament at Pine Golf Course. Test your skills on our challenging course and enjoy a day filled with competition, camaraderie, and memorable moments.
+                    </p>
+                    <p class="card-text">
+                        Date: 31-12-2023<br>
+                        Time: All day<br>
+                        Location: Pine Golf Course
+                    </p>
+                    <a href="#" class="btn btn-success">You are attending</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+    {{!-- <!-- about us  --> --}}
+    <div id="about" class="container mt-5">
+       
+        <div class="container">
+            <h2 class="text-center mb-4">About Us</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="/images/gloved hand.jpg" alt="Golf Course Image" class="img-fluid">
+                </div>
+                <div class="col-md-6">
+                    
+                    <p>Welcome to the picturesque Pine Golf Course, nestled in the heart of rural Kenya, where the serene beauty of nature meets the excitement of golf. Our course, set against the backdrop of lush greenery and rolling hills, provides a unique golfing experience that combines the thrill of the game with the tranquility of the Kenyan countryside.</p>
+        
+                    <p>As you embark on your golfing journey with us, you'll be greeted by a course meticulously designed to harmonize with the natural landscape. The gentle breeze carries the scent of indigenous flora, creating an atmosphere that transcends the ordinary. Immerse yourself in the challenge of our well-manicured fairways, strategically placed bunkers, and inviting greens that offer a rewarding test of skill for golfers of all levels.</p>
+        
+                    <p>At Pine, we take pride in offering more than just a game of golf; we invite you to savor the unique blend of rural charm and sporting excellence. Whether you are a seasoned golfer or a beginner seeking a memorable round, our course promises an unforgettable experience in the heart of Kenya's countryside.</p>
+        
+                    <p>Escape the hustle and bustle of urban life and join us at Pine, where every swing is accompanied by the soothing sounds of nature, and each round is an opportunity to connect with the beauty of rural Kenya. Welcome to a golfing haven that celebrates the joy of the game amidst the tranquility of our scenic landscape.</p>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+
+    {{!-- <!-- membership --> --}}
+
+  <div id="membership" class="container mt-5">
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">MEMBERSHIP PROCESS</h2>
+
+            <div class="card mb-4" style="background-color: #07ef9e;">
+                <div class="card-body">
+                    <h5 class="card-title">Membership Proposal</h5>
+                    <p class="card-text">
+                        Candidates for Membership must be proposed and seconded by Full Members of at least three years standing and only if they have known the Candidate for at least three months.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4" style="background-color: #07ef9e;">
+                <div class="card-body">
+                    <h5 class="card-title">Submission Requirements</h5>
+                    <p class="card-text">
+                        The Proposer and Seconder are required to submit separate confidential reports to the Chairman, through the Club Secretary on their personal knowledge of the Candidate.
+                        Attached to both letters are (a) a copy of his/her ID or Passport, (b) a detailed CV, (c) two passport size photos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4" style="background-color: #07ef9e;">
+                <div class="card-body">
+                    <h5 class="card-title">Membership Fees</h5>
+                    <p class="card-text">
+                        The Full Membership Entrance Fee is 465,000/-. After election, Full Members who are married may nominate their spouses at no extra cost. Annual Subscription is KShs.31,500/=.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4" style="background-color: #07ef9e;">
+                <div class="card-body">
+                    <h5 class="card-title">Responsibilities</h5>
+                    <p class="card-text">
+                        The Proposer and Seconder are required to introduce their Candidate to the Members of the Balloting Committee and they are responsible for the Candidate’s observance of the Club’s constitution.
+                        They shall be jointly and severally responsible financially for ALL debts and other commitments of a Candidate to the Club prior to the election of their Candidate and for a period of one year following such Candidate’s election.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4" style="background-color: #07ef9e;">
+                <div class="card-body">
+                    <h5 class="card-title">Application Process</h5>
+                    <p class="card-text">
+                        The Proposer is to hand in the nomination paper and introduce the Candidate to the Club Secretary. Applications will be taken in rotation, and Proposers will be notified of the date of the Balloting Meeting at which their Candidate’s application will be considered.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{!-- <!-- contact section --> --}}
+ <div id="contact" class="container mt-5">
+        <div class="container mt-5 text-center">
+            <div class="card bg-dark text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Contact Us</h5>
+                    <p class="card-text">For inquiries, feel free to reach out:</p>
+                    <p class="card-text">
+                        <strong>Email:</strong> pinegolf@email.com <br>
+                        <strong>Phone:</strong> +2547061278xx
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
